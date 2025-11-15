@@ -1,4 +1,4 @@
-from tools.check_reddit_reviews import check_reddit_reviews
+from tools.check_community_discussion import check_reddit_reviews
 from tests.test_domains import GOOD_DOMAINS, BAD_DOMAINS
 
 
