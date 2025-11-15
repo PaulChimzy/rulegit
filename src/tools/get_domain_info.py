@@ -1,34 +1,46 @@
 from langchain_core.tools import tool
 from urllib.parse import urlparse
 import whois
-from tld.exceptions import TldDomainNotFound, TldBadUrl
+from whois.exceptions import UnknownTldError
 import json
 
 # --- Get Domain Info ---
 @tool
 def get_domain_info(url: str) -> str:
     """
-    Checks the domain registration information (like age) for a given website URL.
-    Returns a string summary of the domain's creation date, expiration, and registrar.
+    Checks the domain registration information (like age) for a given URL or domain.
+    Accepts both full URLs (https://example.com) and domain names (example.com).
+    Returns a JSON string with domain creation date, expiration, and registrar.
     This is a critical first step for triage.
     """
     
-    try:
-        domain = urlparse(url).netloc
-        domain_info = whois.whois(domain)
+    try:   
+        domain_info = whois.whois(url)
 
-        if not domain_info.creation_date:
-            return f"No domain info found for {domain}. This is a red flag."
+        if not domain_info or not domain_info.creation_date:
+            return json.dumps({"error": f"No domain info found for {url}. This is a red flag."})
         
-        result= {"domain": domain,
-                "creation_date": domain_info.creation_date,
-                "expiration_date": domain_info.expiration_date,
-                "registrar": domain_info.registrar}
+        creation_date = domain_info.creation_date
+        if isinstance(creation_date, list):
+            creation_date = creation_date[0] if creation_date else None
         
-        return json.dumps(result)
+        expiration_date = domain_info.expiration_date
+        if isinstance(expiration_date, list):
+            expiration_date = expiration_date[0] if expiration_date else None
+        
+        result = {
+            "domain": domain_info.domain_name,
+            "creation_date": str(creation_date) if creation_date else None,
+            "expiration_date": str(expiration_date) if expiration_date else None,
+            "registrar": domain_info.registrar
+        }
+        
+        return json.dumps(result, indent=2)
     
-    except (TldDomainNotFound, TldBadUrl):
-        return f"Could not check domain for {url}, unknown TLD. This is suspicious."
+    except UnknownTldError:
+        return json.dumps({"domain": url, 
+                           "error": "Could not check domain for domain, unknown TLD."})
     
     except Exception as e:
-       return f"Error getting domain info for {url}: {e}"
+       return json.dumps({"domain": url, 
+                           "error": f"Error getting domain info: {e}"})
