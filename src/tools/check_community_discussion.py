@@ -14,7 +14,9 @@ def check_reddit_reviews(domain: str):
    Searches Reddit for consumer reviews
    for a given domain name (e.g., 'enroutejewelry.com').
    """
-   query = f"get the reddit reviews for {domain}"
-
-   response = tavily_client.search(query, search_depth="advanced")
-   return response
+   try:
+      query = f"get the reddit reviews for {domain}"
+      response = tavily_client.search(query, search_depth="advanced")
+      return response
+   except Exception as e:
+      return {"Error": f"Failed to search Reddit reviews for {domain}: {str(e)}"}
