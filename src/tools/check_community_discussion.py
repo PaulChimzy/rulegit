@@ -16,7 +16,7 @@ def check_reddit_reviews(domain: str):
    """
    try:
       query = f"get the reddit reviews for {domain}"
-      response = tavily_client.search(query, search_depth="advanced")
+      response = tavily_client.search(query)
       return response
    except Exception as e:
       return {"Error": f"Failed to search Reddit reviews for {domain}: {str(e)}"}
