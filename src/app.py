@@ -9,7 +9,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 app = FastAPI()
 
-@app.get("/")
+@app.get("/health")
 def read_root():
     return {"message": "Service is up and running"}
 
