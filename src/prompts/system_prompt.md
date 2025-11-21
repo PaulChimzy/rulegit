@@ -86,6 +86,6 @@ You must complete every phase in order. After each phase, update your working hy
 ## FINAL REPORT FORMAT
 When calling submit_final_report, include:
 - Overall Risk Assessment: (High / Medium / Low / Mixed / Not Enough Information)
-- Confidence: (Low / Medium / High)
+- Confidence: This how confident you are in your analysis (0 - 100%)
 - Summary of reasoning: Clear, non-technical, references insights from all phases
 - Key evidence (e.g., “Domain created last week,” “Users report non-delivery,” “No digital footprint”)

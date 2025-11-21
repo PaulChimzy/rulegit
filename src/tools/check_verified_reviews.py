@@ -1,8 +1,10 @@
 from langchain_core.tools import tool
+from termcolor import colored
 import requests
 import json
 import os
 from dotenv import load_dotenv
+import time
 
 load_dotenv()
 
@@ -17,6 +19,8 @@ def extract_with_diffbot(url: str):
       'url': url
       }
    
+   
+   
    headers = {"accept": "application/json"}
 
    response = requests.request("GET", base_url, params=params, headers=headers)
@@ -27,18 +31,37 @@ def extract_with_diffbot(url: str):
    return json.loads(response.text)
 
 
+@tool
+def get_trustpilot_review(domain: str):
 
-def get_trustpilot_review(domain):
-   """Get trustpilot review for a domain"""
+    """
+   Description: This function get trustpilot reviews for a given domain using Diffbot extraction tool.
+   It helps to gather verified reviews from Trustpilot to assess the credibility of the domain.
+
+   Input: A domain name as a string.
    
-   url = f"https://www.trustpilot.com/review/{domain}"
-   trustpilot_review = extract_with_diffbot.invoke(url)
+   Output: A dictionary containing extracted Trustpilot reviews or an error message.
+   """
+    print(colored(50 * "=", "green"))
+    start_time = time.time()
+    # print(f"[TIME] Starting trustpilot review extraction for: {domain} at {start_time}")
 
-   if trustpilot_review:
-      return trustpilot_review
-   else:
-      return {"Error": f"Error retrieving trustpilot review for {domain}"}
+    print(f"[DEBUG] Domain: {domain}")
 
+    try:
+        url = f"https://www.trustpilot.com/review/{domain}"
+        trustpilot_review = extract_with_diffbot.invoke(url)
+        print(f"[DEBUG] Trustpilot review: {trustpilot_review}")
+        
+        if trustpilot_review is None:
+            url = f"https://www.trustpilot.com/review/www.{domain}"
+            trustpilot_review = extract_with_diffbot.invoke(url)
+            print(f"[DEBUG] Trustpilot review 2: {trustpilot_review}")
 
+    except Exception as e:
+        print(colored(f"Error retrieving trustpilot review for {domain}: {e}", "red"))
 
+    finally:
+        print(colored(f"[TIME] Time taken for trustpilot review extraction: {time.time() - start_time} seconds", "blue"))
 
+    return trustpilot_review
