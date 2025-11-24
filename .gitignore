@@ -150,6 +150,7 @@ rulegitenv/
 src/agent_test.ipynb
 data_apis.ipynb
 src/tools/trials.ipynb
+*.ipynb
 
 
 
