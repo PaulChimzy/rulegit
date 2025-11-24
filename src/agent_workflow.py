@@ -78,7 +78,7 @@ domain_response = {
       "maxItems": 3,
       "description": "A list of 1–3 short sentences clearly stating the reasoning behind the risk level."
     },
-    "Confidence Level (0 - 100)": {
+    "Confidence Level": {
       "type": "number",
       "minimum": 0,
       "maximum": 100,

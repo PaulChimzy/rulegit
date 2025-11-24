@@ -27,17 +27,19 @@ def validate_url(url: str = "enroutejewelry.com", mode: str = "requests"):
 
     # Placeholder for URL validation logic
 
-    # result = run_agent_workflow(url=url)
-    # return {"url": url, "result": result}
-
     print("🧠 Running LLM analysis ...")
 
-    return {
-        "Risk Level": "Medium",
-        "Rationale": [
-            "Domain age (~30 years) and MarkMonitor in the registrar field strongly support legitimacy for amazon.com.",
-            "Scam Detector outputs show no blacklist hits, valid HTTPS, and ownership/registrar alignment with Amazon Technologies, Inc., indicating reputable infrastructure.",
-            "Reddit and Trustpilot signals reflect generalized consumer feedback (mixed experiences) but do not indicate domain-level fraud or deception.",
-        ],
-        "Confidence Level": 60,
-    }
+    result = run_agent_workflow(url=url)
+    result.update({"url": url})
+    
+    return result
+
+    # return {
+    #     "Risk Level": "Medium",
+    #     "Rationale": [
+    #         "Domain age (~30 years) and MarkMonitor in the registrar field strongly support legitimacy for amazon.com.",
+    #         "Scam Detector outputs show no blacklist hits, valid HTTPS, and ownership/registrar alignment with Amazon Technologies, Inc., indicating reputable infrastructure.",
+    #         "Reddit and Trustpilot signals reflect generalized consumer feedback (mixed experiences) but do not indicate domain-level fraud or deception.",
+    #     ],
+    #     "Confidence Level": 60,
+    # }
