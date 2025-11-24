@@ -134,7 +134,6 @@ You must identify and critique gaps in your reasoning that impact confidence, su
 Your output must follow this json structure:
 ```json
 {{
-  "type": "object",
   "properties": {{
     "Risk Level": {{
       "type": "string",
@@ -150,7 +149,7 @@ Your output must follow this json structure:
       "maxItems": 3,
       "description": "A list of 1–3 short sentences clearly stating the reasoning behind the risk level."
     }},
-    "Confidence Level (0 - 100)": {{
+    "Confidence Level (0 - 100%)": {{
       "type": "number",
       "minimum": 0,
       "maximum": 100,

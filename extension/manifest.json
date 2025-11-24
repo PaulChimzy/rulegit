@@ -1,19 +1,26 @@
 {
-    "name": "Domain Classifier",
-    "version": "1.0",
-    "manifest_version": 3,
-    "description": "Extension to classify websites by their domain extension",
-    "permissions": [
-        "activeTab"
-    ],
-    "action": {
-        "default_icon": "integrity.png",
-        "default_popup": "index.html"
-    },
-    "web_accessible_resources": [
-        {
-            "resources": ["response.json"],
-            "matches": ["<all_urls>"]
-        }
-    ]
+  "name": "Domain Classifier",
+  "version": "1.0",
+  "manifest_version": 3,
+  "description": "Extension to classify websites by their domain extension",
+
+  "permissions": ["tabs", "activeTab", "scripting", "notifications"],
+
+  "host_permissions": ["<all_urls>"],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "action": {
+    "default_icon": "integrity.png",
+    "default_popup": "index.html"
+  },
+
+  "web_accessible_resources": [
+    {
+      "resources": ["response.json"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

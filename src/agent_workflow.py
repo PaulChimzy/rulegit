@@ -60,6 +60,34 @@ class TrustReport(BaseModel):
         description="The confidence level of this assessment (low | medium | High). This should reflect how certain you are about your analysis.",
     )
 
+domain_response = {
+  "type": "object",
+  "properties": {
+    "Risk Level": {
+      "type": "string",
+      "description": "The overall risk level assessed.",
+      "enum": ["Low", "Medium", "High", "Mixed", "Critical"]
+    },
+    "Rationale": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "description": "A concise statement explaining part of the reasoning behind the risk score."
+      },
+      "minItems": 1,
+      "maxItems": 3,
+      "description": "A list of 1–3 short sentences clearly stating the reasoning behind the risk level."
+    },
+    "Confidence Level (0 - 100)": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "A percentage (0–100) expressing how confident the agent is in the assessment."
+    }
+  },
+  "required": ["Risk Level", "Rationale", "Confidence Level"]
+}
+
 # MAIN AGENT WORKFLOW ---
 def run_agent_workflow(url: str) -> TrustReport:
     start_time = time.time()
@@ -69,8 +97,7 @@ def run_agent_workflow(url: str) -> TrustReport:
         get_domain_info,
         scrape_url_info,
         check_reddit_reviews,
-        get_trustpilot_review,
-        submit_final_report,
+        get_trustpilot_review
     ]
 
     input_prompt = get_system_prompt(prompt_file_path, all_tools)
@@ -78,41 +105,49 @@ def run_agent_workflow(url: str) -> TrustReport:
     agent = create_agent(
         model=llm,
         tools=all_tools,
-        system_prompt=input_prompt
-        # response_format=TrustReport,
+        system_prompt=input_prompt,
+        response_format=domain_response,
     )
 
-    # response = agent.invoke(
-    #     {
-    #         "messages": [
-    #             {"role": "user", "content": f"Is this domain legit {url}. Strictly use the domain name as provided without converting to url"}
-    #         ]
-    #     }
-    # )
-    count = 0
-    print(colored(50 * "=", "green"))
-    for chunk in agent.stream(
+    response = agent.invoke(
         {
             "messages": [
-                {
-                    "role": "user",
-                    "content": f"Is this domain legit {url}. Strictly use the domain name as provided without converting to url",
-                }
+                {"role": "user", "content": f"Is this domain legit {url}. Strictly use the domain name as provided without converting to url"}
             ]
-        },
-        stream_mode="updates",
-    ):
-        for step, data in chunk.items():
-            print(f"step: {step}")
-            print(f"content: {data['messages'][-1].content_blocks}")
-        
-        print(colored(50 * "=", "green"))
-        print("\n\n")
+        }
+    )
+    # count = 0
+    # print(colored(50 * "=", "green"))
+    # for chunk in agent.stream(
+    #     {
+    #         "messages": [
+    #             {
+    #                 "role": "user",
+    #                 "content": f"Is this domain legit {url}. Strictly use the domain name as provided without converting to url",
+    #             }
+    #         ]
+    #     },
+    #     stream_mode="updates",
+    # ):
+    #     for step, data in chunk.items():
+    #         print(f"step: {step}")
+    #         print(f"content: {data['messages'][-1].content_blocks}")
+
+    #     print(colored(50 * "=", "green"))
+    #     print("\n\n")
 
     print(colored(f"[TIME] Time taken for agent workflow: {time.time() - start_time} seconds", "blue"))
+    print(colored(f"[DEBUG] Response: {response}", "yellow"))
+    reply = response["structured_response"]  # <-- fix
+
+    # reply = reply.replace("```json", "").replace("```", "").replace("\n", "").strip()
+
+    print(colored(f"[DEBUG] Reply: {reply}", "blue"))
+
+    return reply
 
     # return response["structured_response"].model_dump()
-    return {"status": "Done streaming"}
+    # return {"status": "Done streaming"}
 
 
 if __name__ == "__main__":

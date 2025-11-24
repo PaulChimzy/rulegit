@@ -1,401 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>R U LEGIT?</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 40px;
-            max-width: 600px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 28px;
-            font-weight: 600;
-        }
-
-        .input-group {
-            margin-bottom: 25px;
-        }
-
-        label {
-            display: block;
-            color: #555;
-            margin-bottom: 8px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 14px 18px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            outline: none;
-        }
-
-        input[type="text"]:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        button {
-            flex: 1;
-            padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        button.secondary {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-
-        .current-domain {
-            padding: 12px;
-            background: #f0f4ff;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 14px;
-            color: #555;
-            text-align: center;
-        }
-
-        .current-domain strong {
-            color: #667eea;
-        }
-
-        .result {
-            margin-top: 25px;
-            padding: 25px;
-            border-radius: 10px;
-            background: #f8f9fa;
-            display: none;
-        }
-
-        .result.show {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .risk-level {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .risk-level.low {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .risk-level.medium {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .risk-level.high {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .confidence-score {
-            margin-bottom: 20px;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-        }
-
-        .confidence-score-label {
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 5px;
-        }
-
-        .confidence-bar {
-            height: 20px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 8px;
-        }
-
-        .confidence-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            transition: width 0.5s ease;
-        }
-
-        .explanation {
-            margin-bottom: 20px;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-            line-height: 1.6;
-            color: #333;
-        }
-
-        .explanation p {
-            margin-bottom: 12px;
-        }
-
-        .explanation p:last-child {
-            margin-bottom: 0;
-        }
-
-        .red-flags {
-            margin-top: 20px;
-        }
-
-        .red-flags h3 {
-            font-size: 16px;
-            color: #721c24;
-            margin-bottom: 12px;
-        }
-
-        .red-flags ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .red-flags li {
-            padding: 10px;
-            margin-bottom: 8px;
-            background: white;
-            border-left: 3px solid #dc3545;
-            border-radius: 4px;
-            color: #333;
-        }
-
-        .red-flags li:before {
-            content: "⚠️ ";
-            margin-right: 8px;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-        }
-
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Red Popup Modal for High Risk */
-        .risk-popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .risk-popup-overlay.show {
-            display: flex;
-        }
-
-        .risk-popup {
-            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 20px 60px rgba(220, 53, 69, 0.5);
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            animation: popupSlideIn 0.4s ease;
-            position: relative;
-        }
-
-        @keyframes popupSlideIn {
-            from {
-                opacity: 0;
-                transform: scale(0.8) translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        .risk-popup-icon {
-            font-size: 64px;
-            margin-bottom: 15px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-        }
-
-        .risk-popup h2 {
-            font-size: 28px;
-            margin-bottom: 15px;
-            font-weight: 700;
-        }
-
-        .risk-popup p {
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            opacity: 0.95;
-        }
-
-        .risk-popup button {
-            background: white;
-            color: #dc3545;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            width: 100%;
-        }
-
-        .risk-popup button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .risk-popup button:active {
-            transform: translateY(0);
-        }
-    </style>
+    <link rel="stylesheet" href="index.css" />
     <script src="exchange.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>R U LEGIT?</h1>
-        <div id="current-domain" class="current-domain" style="display: none;">
-            Current website: <strong id="current-domain-text"></strong>
-        </div>
-        <div class="input-group">
-            <label for="website">Enter Website URL</label>
-            <input type="text" id="website" placeholder="e.g., example.com" autocomplete="off">
-        </div>
-        <div class="button-group">
+      <h1>R U LEGIT?</h1>
+      <div id="current-domain" class="current-domain" style="display: none">
+        Current website: <strong id="current-domain-text"></strong>
+      </div>
+      <!-- <div class="input-group">
+        <label for="website">Enter Website URL</label>
+        <input
+          type="text"
+          id="website"
+          placeholder="e.g., example.com"
+          autocomplete="off"
+        />
+      </div> -->
+      <!-- <div class="button-group">
             <button id="check-current">Check Current Site</button>
             <button id="check-manual" class="secondary">Check Manual</button>
+        </div> -->
+      <div id="result" class="result">
+        <div id="loading" class="loading" style="display: none">
+          <div class="spinner"></div>
+          <div>Analyzing website...</div>
         </div>
-        <div id="result" class="result">
-            <div id="loading" class="loading" style="display: none;">
-                <div class="spinner"></div>
-                <div>Analyzing website...</div>
+        <div id="result-content" style="display: none">
+          <div class="result-head">
+            <div class="donut-wrap">
+              <!-- SVG donut: foreground circle (id=donut-circle) and background circle -->
+              <svg
+                id="risk-donut"
+                class="donut"
+                width="100"
+                height="100"
+                viewBox="0 0 100 100"
+                aria-hidden="true"
+              >
+                <circle
+                  id="donut-bg"
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  fill="none"
+                  stroke="#eee"
+                  stroke-width="12"
+                />
+                <circle
+                  id="donut-circle"
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  fill="none"
+                  stroke="#667eea"
+                  stroke-width="12"
+                  stroke-linecap="round"
+                  transform="rotate(-90 50 50)"
+                  stroke-dasharray="251.2"
+                  stroke-dashoffset="0"
+                />
+                <text
+                  id="donut-text"
+                  x="50%"
+                  y="50%"
+                  dominant-baseline="middle"
+                  text-anchor="middle"
+                  font-size="14"
+                  font-weight="700"
+                  fill="#222"
+                >
+                  --
+                </text>
+              </svg>
             </div>
-            <div id="result-content" style="display: none;">
-                <div id="risk-level" class="risk-level"></div>
-                <div class="confidence-score">
-                    <div class="confidence-score-label">Confidence Score</div>
-                    <div id="confidence-value"></div>
-                    <div class="confidence-bar">
-                        <div id="confidence-fill" class="confidence-fill"></div>
-                    </div>
+            <div class="result-meta">
+              <!-- <div id="risk-level" class="risk-level"></div> -->
+              <div class="confidence-score">
+                <div class="confidence-score-label">Confidence Score</div>
+                <div id="confidence-value"></div>
+                <div class="confidence-bar">
+                  <div id="confidence-fill" class="confidence-fill"></div>
                 </div>
-                <div class="explanation">
-                    <strong>Rationale:</strong>
-                    <div id="explanation-text"></div>
-                </div>
-                <div id="red-flags" class="red-flags"></div>
+              </div>
             </div>
-        </div>
-    </div>
+          </div>
 
-    <!-- Red Popup for High Risk -->
-    <div id="risk-popup-overlay" class="risk-popup-overlay">
-        <div class="risk-popup">
-            <div class="risk-popup-icon">⚠️</div>
-            <h2>HIGH RISK WARNING</h2>
-            <p>This website has been flagged as <strong>HIGH RISK</strong>. Exercise extreme caution before proceeding.</p>
-            <button id="close-popup">I Understand</button>
+          <div class="explanation">
+            <strong>Rationale:</strong>
+            <div id="explanation-text"></div>
+          </div>
+          <div id="red-flags" class="red-flags"></div>
         </div>
+      </div>
     </div>
-</body>
+  </body>
 </html>
