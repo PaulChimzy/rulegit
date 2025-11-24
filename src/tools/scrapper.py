@@ -3,6 +3,7 @@ import re
 import argparse
 import time
 import json
+from termcolor import colored
 from typing import List, Optional
 from requests_html import HTMLSession
 import requests
@@ -61,6 +62,7 @@ DEFAULT_HEADERS = {
 
 
 def fetch_requests(url: str, timeout: int = 45, headers: Optional[dict] = None) -> str:
+    print(f"[INFO] Fetching page with requests... {url}")
     headers = {**DEFAULT_HEADERS, **(headers or {})}
     r = requests.get(url, headers=headers, timeout=timeout)
     r.raise_for_status()
@@ -415,13 +417,7 @@ def extract_panels(soup: BeautifulSoup) -> dict:
 import re
 
 
-def url_to_review_slug(url: str) -> str:
-    # Extract domain after https://
-    m = re.search(r"https?://([^/]+)", url)
-    if not m:
-        return None
-
-    domain = m.group(1)
+def url_to_review_slug(domain: str) -> str:
 
     # Replace dots with hyphens
     slug = domain.replace(".", "-")
@@ -430,11 +426,23 @@ def url_to_review_slug(url: str) -> str:
     return f"https://www.scam-detector.com/validator/{slug}-review"
 
 
-def main(url: str, mode: str):
-    """Main scrapper function to fetch and extract data from scam-detector.com review page."""
+def scrape_url_info(url: str, mode: str = "requests") -> dict:
+    """
+    Description: Main scrapper function to fetch and extract data from a domain review page.
+
+    Input: Domain name as provided by the user (e.g slidejewels.com, amazon.com)
+
+    Output: A dictionary containing information about the domain
+    """
+
+    print(colored(50 * "=", "green"))
+
+    start_time = time.time()
+    print(colored(f"[TIME] starting time for scrape_url_info: {start_time}", "blue"))
+
+    print(f"[INFO] Converted URL to review slug: {url}")
 
     url = url_to_review_slug(url)
-    print(f"[INFO] Converted URL to review slug: {url}")
 
     if mode == "requests":
         html = fetch_requests(url)
@@ -458,6 +466,9 @@ def main(url: str, mode: str):
     all_info["wot_details"] = extract_wot_details(soup)
     all_info["about_text"] = extract_about_text(soup)
     all_info.update(extract_panels(soup))
+
+    print(colored(f"[TIME] Time taken for scrape_url_info: {time.time() - start_time} seconds", "blue"))
+
 
     return all_info
 

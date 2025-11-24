@@ -3,16 +3,24 @@ from urllib.parse import urlparse
 import whois
 from whois.exceptions import UnknownTldError
 import json
+import time
+from termcolor import colored
 
 # --- Get Domain Info ---
 @tool
 def get_domain_info(url: str) -> str:
     """
-    Checks the domain registration information (like age) for a given URL or domain.
+    Description: Checks the domain registration information (like age) for a given URL or domain.
     Accepts both full URLs (https://example.com) and domain names (example.com).
     Returns a JSON string with domain creation date, expiration, and registrar.
     This is a critical first step for triage.
+
+    Input: A URL or domain name as a string.
+
+    Output: A JSON string containing domain information or an error message.
     """
+    print(colored(50 * "=", "green"))
+    start_time = time.time()
     
     try:   
         domain_info = whois.whois(url)
@@ -44,3 +52,6 @@ def get_domain_info(url: str) -> str:
     except Exception as e:
        return json.dumps({"domain": url, 
                            "error": f"Error getting domain info: {e}"})
+    
+    finally:
+        print(f"[TIME] Time taken for get_domain_info: {time.time() - start_time} seconds")
