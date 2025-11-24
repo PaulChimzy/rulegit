@@ -1,5 +1,5 @@
 # Test domains for various tools
-# Import this file in test files to avoid duplicating domain lists
+
 
 GOOD_DOMAINS = ["aelfriceden.com",
                "evryjewels.com",
