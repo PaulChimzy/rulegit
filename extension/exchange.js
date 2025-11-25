@@ -34,10 +34,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Update donut appearance
     if (donut) {
-      // remove existing level classes
-      donut.classList.remove("low", "medium", "high");
+      // remove existing level classes (including mixed/critical)
+      donut.classList.remove("low", "medium", "high", "mixed", "critical");
       const level = riskLevelValue.toLowerCase();
-      if (level === "low" || level === "medium" || level === "high") {
+      // Accept low/medium/high/mixed/critical
+      if (["low", "medium", "high", "mixed", "critical"].includes(level)) {
         donut.classList.add(level);
         const cap = level.charAt(0).toUpperCase() + level.slice(1);
         // Use tspans so the label appears on two lines inside the SVG text
@@ -63,10 +64,12 @@ document.addEventListener("DOMContentLoaded", function () {
       // medium -> 1/2 filled
       // high -> 3/4 filled
       const level = (riskLevelValue || "").toLowerCase();
-      let baseFraction = null;
-      if (level === "low") baseFraction = 0.25;
-      else if (level === "medium") baseFraction = 0.5;
-      else if (level === "high") baseFraction = 0.75;
+  let baseFraction = null;
+  if (level === "low") baseFraction = 0.25;
+  else if (level === "medium") baseFraction = 0.5;
+  else if (level === "high") baseFraction = 0.75;
+  else if (level === "mixed") baseFraction = 0.5; // same as medium
+  else if (level === "critical") baseFraction = 1.0; // full circle
 
       // If we have a baseFraction, use it. Otherwise fall back to confidence percent.
       let fillFraction;
@@ -102,12 +105,35 @@ document.addEventListener("DOMContentLoaded", function () {
   // NEW: Listen for messages from background.js
   // -------------------------------
   chrome.runtime.onMessage.addListener((msg) => {
+    if (msg.action === "analysis_started") {
+      // Show spinner & analyzing UI while background fetch runs
+      console.log("Popup: analysis started for", msg.domain);
+      const currentDomainDiv = document.getElementById("current-domain");
+      const currentDomainText = document.getElementById("current-domain-text");
+      currentDomainText.textContent = msg.domain || "";
+      currentDomainDiv.style.display = "block";
+      loadingDiv.style.display = "block";
+      resultContent.style.display = "none";
+      resultDiv.classList.add("show");
+      return;
+    }
     if (msg.action === "risk_result") {
       console.log("Popup received:", msg);
       // websiteInput.value = msg.domain;
       currentDomainText.textContent = msg.domain;
       currentDomainDiv.style.display = "block";
       displayResults(msg.data);
+    }
+
+    if (msg.action === "clear_results") {
+      // Hide/clear popup results when active tab has no cached result
+      currentDomainText.textContent = "";
+      currentDomainDiv.style.display = "none";
+      const resultContent = document.getElementById("result-content");
+      const loadingDiv = document.getElementById("loading");
+      loadingDiv.style.display = "none";
+      resultContent.style.display = "none";
+      resultDiv.classList.remove("show");
     }
 
     if (msg.action === "risk_error") {
@@ -120,6 +146,19 @@ document.addEventListener("DOMContentLoaded", function () {
   // NEW: Request last cached result from background.js
   // -------------------------------
   chrome.runtime.sendMessage({ action: "get_last_result" }, (response) => {
+    if (!response) return;
+    // If the background reports the domain is currently being analyzed,
+    // show the spinner/analysis UI so the user sees progress even if they
+    // opened the popup after analysis started.
+    if (response.inProgress) {
+      console.log("Popup: domain analysis in progress:", response.domain);
+      currentDomainText.textContent = response.domain || "";
+      currentDomainDiv.style.display = "block";
+      loadingDiv.style.display = "block";
+      resultContent.style.display = "none";
+      resultDiv.classList.add("show");
+      return;
+    }
     if (response && response.domain && response.data) {
       console.log("Popup got last cached result:", response);
       // websiteInput.value = response.domain;
