@@ -143,6 +143,16 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+rulegitenv/
+
+
+# Test/Scratch notebooks
+src/agent_test.ipynb
+data_apis.ipynb
+src/tools/trials.ipynb
+*.ipynb
+
+
 
 # Spyder project settings
 .spyderproject

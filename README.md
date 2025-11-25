@@ -31,20 +31,23 @@ flowchart TD
 ```css
 rulegit/
 │
-├── backend/
-│   ├── src/
+├── src/
+│   ├── prompts/
 │   ├── tests/
-│   ├── requirements.txt
-│   └── README.md
+│   ├── tools/  
+│   ├── agent_workflow.py
+│   └── app.py
 │
-└── extension/
-    ├── manifest.json
-    ├── background.js
-    ├── content.js
-    └── popup/
-        ├── popup.html
-        ├── popup.js
-        └── popup.css
+├── extension/
+|   ├── manifest.json
+|    ├── background.js
+|    ├── exchange.js
+|    ├── index.html
+|    └── index.css
+|
+|── requirements.txt
+|── .env
+└── README.md
 ```
 
 ---
@@ -178,3 +181,8 @@ uvicorn app:app --host 0.0.0.0 --port 8000
 - The url validation uses the api at http://localhost:8000/validate_url?=domain_name
 
 ## 3.2 Browser Extension
+### Load into Chrome
+1. Go to chrome://extensions
+2. Enable Developer Mode
+3. Click Load Unpacked
+4. Select the extension/ folder
