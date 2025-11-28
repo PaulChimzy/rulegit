@@ -99,10 +99,10 @@ Scans the web using the Tavily Search Toolkit to gather information about the ta
 #### Extraction Tool
 Retrieves structured data through Diffbot from trusted review platforms such as Trustpilot. Extracts ratings, reviews, and credibility indicators in clean, machine-readable formats, enabling evaluation of external validation and website legitimacy.
 
-### Web Scrapping Tool
+#### Web Scrapping Tool
 Scrapes data directly from the target website or relevant third-party pages when search and extraction tools return limited results. Captures product listings, policy pages, business claims, security indicators, and other on-site trustworthiness signals.
 
-### Domain Information Toool
+#### Domain Information Tool
 Retrieves WHOIS records, DNS details, hosting metadata, and registration information through a domain-intelligence module. Identifies trust signals such as domain age, registrar reputation, privacy masking, ownership consistency, and red flags associated with newly created or suspicious domains.
 
 ## Workflow Diagram
